@@ -1,118 +1,50 @@
+<div align="center">
+
 # mellow
 
-![Status](https://img.shields.io/badge/status-active-brightgreen?style=flat-square)
-![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
-![AWS](https://img.shields.io/badge/AWS_Bedrock-Nova_Lite-FF9900?style=flat-square&logo=amazonaws&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
+### Descubrimiento musical con IA — del estado emocional al track perfecto
 
-> *El espacio entre despierto y soñando. Donde vive la música correcta.*
+[![AWS Bedrock](https://img.shields.io/badge/AWS%20Bedrock-Nova%20Lite-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/bedrock/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Python%203.11-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18%20+%20Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Spotify](https://img.shields.io/badge/Spotify-Web%20API-1DB954?style=for-the-badge&logo=spotify&logoColor=white)](https://developer.spotify.com/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-Mellow es una app de descubrimiento musical que encuentra canciones basadas en quién eres **ahora mismo** — no en tu historial. Describes tu estado emocional en lenguaje natural, y el sistema analiza ese contexto con IA para encontrar tracks que realmente resonarán contigo.
+**Mellow** es una app de descubrimiento musical que encuentra canciones basadas en quién eres ahora mismo — no en tu historial.  
+Describís tu estado emocional en lenguaje natural y el sistema analiza ese contexto con IA para encontrar tracks que realmente resonarán con vos.
 
----
+*El espacio entre despierto y soñando. Donde vive la música correcta.*
 
-## Tabla de contenidos
+[Arquitectura](#arquitectura) · [Flujo de usuario](#flujo-de-usuario) · [API Reference](#api-reference) · [Instalación](#instalación-y-desarrollo-local) · [Despliegue](#despliegue)
 
-- [Demo](#demo)
-- [Características](#características)
-- [Arquitectura](#arquitectura)
-- [Stack tecnológico](#stack-tecnológico)
-- [Flujo de usuario](#flujo-de-usuario)
-- [API Reference](#api-reference)
-- [Instalación y desarrollo local](#instalación-y-desarrollo-local)
-- [Variables de entorno](#variables-de-entorno)
-- [Despliegue](#despliegue)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Decisiones de diseño](#decisiones-de-diseño)
+</div>
 
 ---
 
-## Demo
+## El problema
 
-> Proyecto presentado en el **CubePath Hackathon 2026**.
+Las plataformas de música actuales te recomiendan en base a lo que escuchaste — no en base a cómo te sentís ahora. El resultado es una burbuja de historial que no considera tu estado emocional del momento.
 
-**Flujo completo:**
-1. Describís tu estado emocional: *"Estoy en ese punto raro entre nostálgico y en paz, quiero algo que suene como recordar sin dolor"*
-2. Bedrock Nova Lite analiza el contexto y genera parámetros de búsqueda
-3. Mellow encuentra 10 canciones candidatas via Spotify
-4. Escuchás previews de 30s, das like, explorás artistas
-5. Refinás hasta 3 rondas si querés ajustar más el resultado
-6. Compartís tu tarjeta de mood estilo Spotify Wrapped
+Mellow invierte esa lógica:
+
+- **Sin historial requerido** — describís cómo te sentís y el sistema hace el resto
+- **Sin login obligatorio** — funciona de inmediato, sin fricciones
+- **Sin algoritmos de caja negra** — el proceso de selección es transparente y ajustable
 
 ---
 
-## Características
+## Qué hace Mellow
 
-- **Análisis emocional con IA** — AWS Bedrock Nova Lite convierte texto libre en parámetros musicales estructurados
-- **Búsqueda contextual** — Consultas Spotify sanitizadas y serializadas, con fallback a Deezer para previews
-- **Refinamiento iterativo** — Hasta 3 rondas, ajustando targets de audio basado en likes/dislikes
-- **Panel de artistas** — Top 5 tracks, artistas relacionados, navegación encadenada
-- **Mood Share Card** — Tarjeta visual estilo Spotify Wrapped generada como PNG descargable / compartible vía Web Share API
-- **Previews de 30s** — Un track a la vez, con animación de waveform sincronizada
-- **Sin login obligatorio** — La app funciona sin autenticación. Supabase disponible para persistencia opcional
-
----
-
-## Arquitectura
-
-```
-┌─────────────────────────────────────────────────────┐
-│                     Usuario                          │
-│              (texto libre: estado emocional)         │
-└──────────────────────┬──────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│                  Frontend (React)                    │
-│   Landing → Onboarding → Loading → Results          │
-│   Nginx · Framer Motion · Tailwind CSS              │
-└──────────────────────┬──────────────────────────────┘
-                       │ HTTP (REST)
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│                 Backend (FastAPI)                    │
-│                                                      │
-│  POST /analyze ──► Bedrock Nova Lite                │
-│                      │                              │
-│                      ▼                              │
-│              Spotify Search API                     │
-│              (serializado, sanitizado)              │
-│                      │                              │
-│                      ▼                              │
-│           Deezer (preview fallback)                 │
-│                      │                              │
-│                      ▼                              │
-│              Scoring + Ranking                      │
-│                                                     │
-│  POST /refine ──► Ajuste de targets                 │
-│  GET  /artists/{id} ──► Spotify Artist API         │
-└─────────────────────────────────────────────────────┘
-```
-
-**Principios clave:**
-- **Stateless server** — todo el estado de sesión vive en el browser
-- **Serialización de requests** — `asyncio.Semaphore(1)` + delay 0.3s para respetar rate limits de Spotify
-- **Sanitización de queries** — strip automático de field filters deprecados (`artist:`, `genre:`, `year:`)
-- **Double-check locking** — `asyncio.Lock` en token acquisition para evitar race conditions
-
----
-
-## Stack tecnológico
-
-| Capa | Tecnología | Motivo |
-|------|-----------|--------|
-| Frontend | React 18 + Vite | SPA rápida, ecosistema maduro |
-| Animaciones | Framer Motion | Transiciones fluidas sin esfuerzo |
-| Estilos | Tailwind CSS | Utility-first, consistente con el design system |
-| Backend | FastAPI (Python 3.11) | Async nativo, tipado con Pydantic, DX excelente |
-| IA | AWS Bedrock — Nova Lite | Bajo costo, latencia aceptable, buen razonamiento contextual |
-| Música | Spotify Web API | Catálogo más completo disponible |
-| Preview fallback | Deezer API | Spotify preview_url es null en muchos tracks para dev apps |
-| Auth (opcional) | Supabase | Persistencia de sesiones y tracks guardados |
-| Infra | Docker Compose | Un comando para levantar todo |
+| Feature | Descripción |
+|---------|-------------|
+| **Análisis emocional con IA** | AWS Bedrock Nova Lite convierte texto libre en parámetros musicales estructurados |
+| **Búsqueda contextual** | Consultas Spotify sanitizadas y serializadas, con fallback a Deezer para previews |
+| **Refinamiento iterativo** | Hasta 3 rondas ajustando targets de audio basado en likes / dislikes |
+| **Panel de artistas** | Top 5 tracks, artistas relacionados, navegación encadenada |
+| **Mood Share Card** | Tarjeta visual estilo Spotify Wrapped generada como PNG descargable y compartible |
+| **Previews de 30s** | Un track a la vez con animación de waveform sincronizada |
+| **Sin login obligatorio** | Supabase disponible para persistencia opcional entre visitas |
 
 ---
 
@@ -122,7 +54,7 @@ Mellow es una app de descubrimiento musical que encuentra canciones basadas en q
 Landing
   │
   └─► Onboarding (3 pantallas)
-        │  ① Estado emocional — texto libre (requerido, mín. 5 palabras)
+        │  ① Estado emocional  — texto libre (requerido, mín. 5 palabras)
         │  ② Universo musical  — texto libre o "Surprise me" (opcional)
         │  ③ Sliders           — tempo · lyrics/instrumental · familiaridad (opcional)
         │
@@ -147,15 +79,66 @@ Landing
                     │     └─ "Compartir mood" → Mood Share Card (PNG)
                     │
                     └── Refinamiento (hasta 3 rondas)
-                          └─ Nuevos 10 tracks ajustados
+                          └─ Nuevos 10 tracks ajustados por feedback
 ```
+
+---
+
+## Arquitectura
+
+```
+Browser (React + Vite)
+  ├── Landing       →  entrada a la experiencia
+  ├── Onboarding    →  estado emocional · universo musical · sliders
+  ├── Loading       →  feedback visual mientras corre el pipeline
+  └── Results       →  tracks · artist panel · liked panel · refinamiento
+        │
+        │  HTTP (REST)
+        ▼
+FastAPI  (Python 3.11)
+  ├── POST /analyze     →  Bedrock → Spotify → scoring → respuesta completa
+  ├── POST /refine      →  ajuste de audio targets + nueva búsqueda
+  ├── GET  /artists/{id}            →  detalle del artista
+  ├── GET  /artists/{id}/top-tracks →  top 5 tracks por market
+  ├── GET  /artists/{id}/related-artists
+  └── GET  /health
+        │
+        ▼
+Servicios externos
+  ├── AWS Bedrock Nova Lite  →  análisis emocional + generación de parámetros
+  ├── Spotify Web API        →  búsqueda de tracks + datos de artistas
+  ├── Deezer API             →  fallback de preview_url (sin auth)
+  └── Supabase               →  persistencia opcional de sesiones y likes
+```
+
+**Principios clave del backend:**
+
+- **Stateless server** — todo el estado de sesión vive en el browser (React state + SessionContext)
+- **Serialización de requests** — `asyncio.Semaphore(1)` + delay 0.3s para respetar rate limits de Spotify
+- **Sanitización de queries** — strip automático de field filters deprecados (`artist:`, `genre:`, `year:`)
+- **Double-check locking** — `asyncio.Lock` en token acquisition para evitar race conditions
+
+---
+
+## Stack tecnológico
+
+| Capa | Tecnología | Motivo |
+|------|-----------|--------|
+| Frontend | React 18 + Vite | SPA rápida, ecosistema maduro |
+| Animaciones | Framer Motion | Transiciones fluidas sin esfuerzo |
+| Estilos | Tailwind CSS | Utility-first, consistente con el design system |
+| Backend | FastAPI (Python 3.11) | Async nativo, tipado con Pydantic, DX excelente |
+| IA | AWS Bedrock — Nova Lite | Bajo costo (~$0.00006/1K tokens), latencia aceptable, buen razonamiento contextual |
+| Música | Spotify Web API | Catálogo más completo disponible |
+| Preview fallback | Deezer API | Spotify deprecó `preview_url` para dev apps en muchos tracks |
+| Auth (opcional) | Supabase | Persistencia de sesiones y tracks guardados sin ops |
+| Infra | Docker Compose | Un comando para levantar todo |
 
 ---
 
 ## API Reference
 
 ### `POST /analyze`
-
 Corre el pipeline completo: Bedrock → Spotify → scoring.
 
 **Request body:**
@@ -178,23 +161,22 @@ Corre el pipeline completo: Bedrock → Spotify → scoring.
   "tracks": [...],
   "lift_tracks": [...],
   "lift_label": "Cuando estés listo",
-  "current_targets": { "target_valence": 0.6, ... }
+  "current_targets": { "target_valence": 0.6, "..." : "..." }
 }
 ```
 
 ---
 
 ### `POST /refine`
-
 Ajusta los targets de audio basado en feedback y busca nuevos tracks.
 
 **Request body:**
 ```json
 {
-  "current_targets": { ... },
+  "current_targets": { "..." : "..." },
   "liked_ids": ["track1", "track2"],
   "disliked_ids": ["track3"],
-  "all_shown_ids": ["track1", "track2", "track3", "..."],
+  "all_shown_ids": ["track1", "track2", "track3"],
   "rounds": [...],
   "emotional_text": "...",
   "music_taste_text": "..."
@@ -204,19 +186,15 @@ Ajusta los targets de audio basado en feedback y busca nuevos tracks.
 ---
 
 ### `GET /artists/{artist_id}`
-
 Detalle del artista: imagen, géneros, followers, popularity.
 
 ### `GET /artists/{artist_id}/top-tracks`
-
 Top 5 tracks del artista para el market resuelto. Con fallback a búsqueda si el endpoint está restringido.
 
 ### `GET /artists/{artist_id}/related-artists`
-
 Hasta 5 artistas relacionados. Retorna lista vacía si el endpoint está restringido (dev apps).
 
 ### `GET /health`
-
 ```json
 { "status": "ok" }
 ```
@@ -230,9 +208,9 @@ Hasta 5 artistas relacionados. Retorna lista vacía si el endpoint está restrin
 - Docker + Docker Compose
 - Cuenta AWS con acceso a Bedrock (modelo `us.amazon.nova-lite-v1:0`, región `us-east-1`)
 - App de Spotify en [developer.spotify.com](https://developer.spotify.com) (modo desarrollo)
-- (Opcional) Proyecto en [supabase.com](https://supabase.com)
+- *(Opcional)* Proyecto en [supabase.com](https://supabase.com)
 
-### Setup
+### Setup con Docker
 
 ```bash
 # 1. Clonar el repositorio
@@ -275,27 +253,24 @@ npm run dev                     # → http://localhost:5173
 
 ### `/.env` (backend)
 
-```env
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_REGION=us-east-1
-
-SPOTIFY_CLIENT_ID=
-SPOTIFY_CLIENT_SECRET=
-
-FRONTEND_URL=http://localhost:3000
-```
+| Variable | Requerida | Descripción |
+|----------|-----------|-------------|
+| `AWS_ACCESS_KEY_ID` | Sí | Credenciales AWS |
+| `AWS_SECRET_ACCESS_KEY` | Sí | Credenciales AWS |
+| `AWS_REGION` | Sí | e.g. `us-east-1` |
+| `SPOTIFY_CLIENT_ID` | Sí | App de Spotify |
+| `SPOTIFY_CLIENT_SECRET` | Sí | App de Spotify |
+| `FRONTEND_URL` | Sí | e.g. `http://localhost:3000` |
 
 ### `/frontend/.env`
 
-```env
-VITE_BACKEND_URL=http://localhost:8000
-VITE_API_URL=http://localhost:8000
-VITE_SPOTIFY_CLIENT_ID=        # mismo valor que SPOTIFY_CLIENT_ID del backend
-
-VITE_SUPABASE_URL=             # opcional
-VITE_SUPABASE_ANON_KEY=        # opcional
-```
+| Variable | Requerida | Descripción |
+|----------|-----------|-------------|
+| `VITE_BACKEND_URL` | Sí | URL del backend |
+| `VITE_API_URL` | Sí | URL del backend (alias) |
+| `VITE_SPOTIFY_CLIENT_ID` | Sí | Mismo valor que `SPOTIFY_CLIENT_ID` |
+| `VITE_SUPABASE_URL` | No | Persistencia opcional |
+| `VITE_SUPABASE_ANON_KEY` | No | Persistencia opcional |
 
 > **Nota Spotify:** Las dev apps tienen un límite de ~900 llamadas de búsqueda antes de ser restringidas permanentemente. Si las búsquedas empiezan a devolver 0 resultados, crear una nueva app en el dashboard de Spotify y actualizar ambos `.env`.
 
@@ -303,7 +278,7 @@ VITE_SUPABASE_ANON_KEY=        # opcional
 
 ## Despliegue
 
-El stack está pensado para un **único VPS** con Docker Compose.
+El stack está pensado para un único VPS con Docker Compose:
 
 ```bash
 # En el servidor
@@ -312,9 +287,7 @@ docker compose down
 docker compose up --build -d
 ```
 
-El frontend sirve el build estático de React via Nginx. El backend corre con Uvicorn detrás del mismo Compose network.
-
-**No hay base de datos.** El estado de sesión vive en el browser (React state + SessionContext). Supabase se usa opcionalmente para persistencia entre visitas.
+El frontend sirve el build estático de React vía Nginx. El backend corre con Uvicorn dentro del mismo Compose network. No hay base de datos — el estado de sesión vive en el browser. Supabase cubre la persistencia opcional sin ops adicionales.
 
 ---
 
@@ -384,21 +357,26 @@ mellow/
 
 ## Decisiones de diseño
 
-**¿Por qué sin base de datos?**
-La sesión vive en el browser. Para un hackathon, eliminar Postgres/Redis reduce la superficie de error y el tiempo de setup. Supabase cubre la persistencia opcional sin ops.
-
-**¿Por qué no OAuth de Spotify?**
-Los dev apps muestran advertencia de "redirect_uri insegura" en localhost con HTTP. La alternativa implementada — links individuales por track + Mood Share Card — da mejor UX sin las fricciones del OAuth.
-
-**¿Por qué serializar las búsquedas de Spotify?**
-`Semaphore(1)` + 0.3s de delay entre requests. Las dev apps de Spotify tienen rate limits agresivos y una cuota total de ~900 búsquedas. La serialización evita 429s y extiende la vida útil de cada app.
-
-**¿Por qué Deezer como fallback?**
-Spotify deprecated el campo `preview_url` para dev apps en muchos tracks. Deezer tiene una API pública sin auth que permite buscar previews de 30s por nombre de artista + canción.
-
-**¿Por qué Nova Lite en vez de Claude/GPT-4?**
-Costo y latencia. Nova Lite a ~$0.00006/1K tokens input es significativamente más barato para un hackathon que corre decenas de análisis. El razonamiento contextual necesario para parsear estados emocionales está dentro de sus capacidades.
+| Decisión | Razonamiento |
+|----------|-------------|
+| **Sin base de datos** | La sesión vive en el browser. Para un hackathon, eliminar Postgres/Redis reduce la superficie de error y el tiempo de setup. Supabase cubre la persistencia opcional sin ops. |
+| **Sin OAuth de Spotify** | Las dev apps muestran advertencia de "redirect_uri insegura" en localhost con HTTP. Links individuales por track + Mood Share Card dan mejor UX sin las fricciones del OAuth. |
+| **Serialización de búsquedas** | `Semaphore(1)` + 0.3s de delay. Las dev apps de Spotify tienen rate limits agresivos y una cuota total de ~900 búsquedas. La serialización evita 429s y extiende la vida útil de cada app. |
+| **Deezer como fallback** | Spotify deprecó `preview_url` para dev apps en muchos tracks. Deezer tiene una API pública sin auth que permite buscar previews de 30s por nombre de artista + canción. |
+| **Nova Lite vs Claude/GPT-4** | Costo y latencia. Nova Lite a ~$0.00006/1K tokens input es significativamente más barato para un hackathon que corre decenas de análisis. El razonamiento contextual necesario está dentro de sus capacidades. |
 
 ---
 
-*Mellow — CubePath Hackathon 2026*
+## Autor
+
+**Andrés Rodas** — Ingeniería Informática, UPCH · Cloud Computing & IA
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Andrés_Rodas-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/andres-rodas-802309272)
+[![GitHub](https://img.shields.io/badge/GitHub-@AndresRJ18-181717?style=flat-square&logo=github)](https://github.com/AndresRJ18)
+[![Email](https://img.shields.io/badge/Email-andrescloud18sj@gmail.com-D14836?style=flat-square&logo=gmail)](mailto:andrescloud18sj@gmail.com)
+
+
+---
+<div align="center">
+Mellow — CubePath Hackathon 2026
+</div>
