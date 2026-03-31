@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #09090b;
+    color: #f4f4f5;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    user-select: none;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #09090b; }
+  ::-webkit-scrollbar-thumb { background: #D4D0C8; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #93f57b; }
+
+  /* Range slider */
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    height: 24px;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    background: rgba(255,255,255,0.15);
+    height: 3px;
+    border-radius: 9999px;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #93f57b;
+    border-radius: 50%;
+    margin-top: -8.5px;
+    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.7);
+    border: 2px solid #0a0a0a;
+    transition: transform 0.15s;
+  }
+  input[type='range']:active::-webkit-slider-thumb {
+    transform: scale(1.15);
+    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.85);
+  }
+  input[type='range']::-moz-range-track {
+    background: rgba(255,255,255,0.15);
+    height: 3px;
+    border-radius: 9999px;
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #93f57b;
+    border-radius: 50%;
+    border: 2px solid #0a0a0a;
+    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+  }
+  input[type='range']:focus { outline: none; }
+
+  textarea, input[type='text'] {
+    outline: none;
+  }
+
+  * { box-sizing: border-box; }
+}
+
+@layer components {
+  /* Botón con borde negro — hover invierte a negro/blanco */
+  .btn-outline {
+    @apply border-2 border-black text-black rounded-full px-10 py-4 text-xs font-black uppercase tracking-[0.15em] transition-all duration-200 hover:bg-surface-container active:bg-surface-container-high active:scale-95 relative overflow-hidden;
+  }
+  /* Botón CTA lleno — verde lima con sombra sólida neobrut */
+  .btn-filled {
+    @apply bg-primary text-on-primary rounded-full px-10 py-4 text-xs font-black uppercase tracking-[0.15em] transition-all duration-200 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.85)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.85)] hover:-translate-y-px active:scale-95 active:shadow-none;
+  }
+  .label-caps {
+    @apply text-[0.65rem] font-black uppercase tracking-[0.3em];
+  }
+  /* Card editorial — blanca, redondeada, sombra flat */
+  .card {
+    @apply bg-white rounded-3xl border border-black/10 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.05)];
+  }
+}

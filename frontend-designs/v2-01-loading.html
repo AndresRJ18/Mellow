@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>mellow | Initializing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#17eefa",
+              "surface-container-high": "#201f1f",
+              "on-tertiary-container": "#005458",
+              "primary-dim": "#2be800",
+              "background": "#0e0e0e",
+              "inverse-surface": "#fcf8f8",
+              "on-secondary-container": "#d0d0d0",
+              "on-secondary-fixed-variant": "#5a5c5c",
+              "surface-variant": "#262626",
+              "secondary-fixed": "#e2e2e2",
+              "outline": "#777575",
+              "primary-fixed-dim": "#2be800",
+              "on-error": "#450900",
+              "surface-container-low": "#131313",
+              "error-container": "#b92902",
+              "on-tertiary-fixed": "#003f43",
+              "on-primary": "#0d6100",
+              "tertiary-container": "#17eefa",
+              "secondary-fixed-dim": "#d4d4d4",
+              "surface-bright": "#2c2c2c",
+              "primary-container": "#2ff801",
+              "on-tertiary-fixed-variant": "#005e63",
+              "surface-tint": "#8eff71",
+              "on-error-container": "#ffd2c8",
+              "secondary-dim": "#d4d4d4",
+              "on-secondary-fixed": "#3e4040",
+              "on-primary-fixed": "#064200",
+              "on-primary-container": "#0b5800",
+              "on-tertiary": "#005d62",
+              "on-background": "#ffffff",
+              "tertiary": "#88f6ff",
+              "error-dim": "#d53d18",
+              "surface-container-lowest": "#000000",
+              "surface-container-highest": "#262626",
+              "tertiary-fixed-dim": "#00deea",
+              "on-primary-fixed-variant": "#0d6200",
+              "on-secondary": "#505252",
+              "on-surface": "#ffffff",
+              "outline-variant": "#494847",
+              "on-surface-variant": "#adaaaa",
+              "tertiary-dim": "#00deea",
+              "error": "#ff7351",
+              "surface-container": "#1a1919",
+              "inverse-primary": "#106f00",
+              "secondary": "#e2e2e2",
+              "inverse-on-surface": "#565554",
+              "surface-dim": "#0e0e0e",
+              "surface": "#0e0e0e",
+              "primary-fixed": "#2ff801",
+              "secondary-container": "#454747",
+              "primary": "#8eff71"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #000000;
+            overflow: hidden;
+        }
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid #8eff71;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: 0.1em;
+        }
+        .glow-soft {
+            box-shadow: 0 0 20px rgba(142, 255, 113, 0.2);
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-primary selection:text-on-primary">
+<!-- THE KINETIC VOID: Background Particle Layer -->
+<div class="fixed inset-0 pointer-events-none z-0">
+<!-- Particle 1 -->
+<div class="absolute w-1 h-1 bg-primary opacity-20 top-[15%] left-[12%]" style="box-shadow: 0 0 8px #8eff71;"></div>
+<!-- Particle 2 -->
+<div class="absolute w-2 h-2 bg-primary opacity-40 top-[45%] left-[82%]" style="box-shadow: 0 0 10px #8eff71;"></div>
+<!-- Particle 3 -->
+<div class="absolute w-1.5 h-1.5 bg-primary opacity-60 top-[75%] left-[25%]" style="box-shadow: 0 0 12px #8eff71;"></div>
+<!-- Particle 4 -->
+<div class="absolute w-1 h-1 bg-primary opacity-30 top-[20%] left-[60%]" style="box-shadow: 0 0 6px #8eff71;"></div>
+<!-- Particle 5 -->
+<div class="absolute w-3 h-3 bg-primary opacity-20 top-[88%] left-[5%] text-xs flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="Small neon green geometric square particle with a soft glow effect against a pure black background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsfhczsRq530KzvjyXr-YaNcFKkURWo_Mszsh1UWpi_fVQmyPtQhq0XsKCbieKG6aYl6VMtvcBsQXroF_YGRIbAx6YJ5fwj9hCdU-8WUQ36J-2WjUoZsucGfYqS6MXcgTgKUrw2PYwuPv2_Khke4TOOdtCAh3vmjLcH6tSBYduB97_koufAvbsroJqxInwwS5Q7F3TtKenIGPqbAw9n0nlS47nNYk6gsI7Mb2inxQw2E_bazU1A4vrsdksFwlzNgwW1liH1YxdigM"/>
+</div>
+<!-- Particle 6 -->
+<div class="absolute w-1 h-1 bg-primary opacity-70 top-[33%] left-[90%]" style="box-shadow: 0 0 14px #8eff71;"></div>
+<!-- Particle 7 -->
+<div class="absolute w-2 h-2 bg-primary opacity-25 top-[10%] left-[40%]" style="box-shadow: 0 0 8px #8eff71;"></div>
+<!-- Particle 8 -->
+<div class="absolute w-1.5 h-1.5 bg-primary opacity-50 top-[60%] left-[50%]" style="box-shadow: 0 0 10px #8eff71;"></div>
+<!-- Particle 9 -->
+<div class="absolute w-1 h-1 bg-primary opacity-40 top-[80%] left-[70%]" style="box-shadow: 0 0 6px #8eff71;"></div>
+<!-- Particle 10 -->
+<div class="absolute w-2 h-2 bg-primary opacity-30 top-[5%] left-[75%]" style="box-shadow: 0 0 10px #8eff71;"></div>
+<!-- Particle 11 -->
+<div class="absolute w-1 h-1 bg-primary opacity-60 top-[50%] left-[10%]" style="box-shadow: 0 0 8px #8eff71;"></div>
+<!-- Particle 12 -->
+<div class="absolute w-3 h-3 bg-primary opacity-10 top-[95%] left-[95%]" style="box-shadow: 0 0 4px #8eff71;"></div>
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 w-full h-screen flex flex-col items-center justify-center px-6">
+<!-- Branding Anchor -->
+<div class="mb-24 text-center">
+<h1 class="text-3xl font-black text-primary uppercase tracking-[0.4em] mb-2">mellow</h1>
+<p class="text-[0.65rem] font-bold text-on-surface-variant uppercase tracking-[0.2em] opacity-50">Kinetic Void Interface v4.0.2</p>
+</div>
+<!-- API Feedback Display (Typewriter Emulation) -->
+<div class="max-w-md w-full">
+<div class="flex flex-col space-y-4 font-mono">
+<!-- Entry 1 -->
+<div class="flex items-start gap-3">
+<span class="text-primary text-[10px] mt-1">
+<span class="material-symbols-outlined !text-[12px]" data-icon="terminal">terminal</span>
+</span>
+<p class="text-on-surface-variant text-sm tracking-tight opacity-40">Connecting to secure_node_alpha...</p>
+</div>
+<!-- Entry 2 -->
+<div class="flex items-start gap-3">
+<span class="text-primary text-[10px] mt-1">
+<span class="material-symbols-outlined !text-[12px]" data-icon="check_circle">check_circle</span>
+</span>
+<p class="text-on-surface-variant text-sm tracking-tight opacity-60">Authentication handshake complete.</p>
+</div>
+<!-- Entry 3 (Active) -->
+<div class="flex items-start gap-3">
+<span class="text-primary text-[10px] mt-1">
+<span class="material-symbols-outlined !text-[12px]" data-icon="sync">sync</span>
+</span>
+<div class="typewriter inline-block">
+<p class="text-[#888888] text-sm tracking-widest uppercase">Synchronizing artistic metadata...</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Visual Hint -->
+<div class="fixed bottom-12 left-0 w-full flex justify-center items-center space-x-24">
+<div class="flex flex-col items-center">
+<span class="label-md text-primary font-bold tracking-widest text-[10px]">CORE</span>
+<div class="w-px h-8 bg-gradient-to-b from-primary/40 to-transparent mt-2"></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="label-md text-on-surface-variant font-bold tracking-widest text-[10px] opacity-20">UPLINK</span>
+<div class="w-px h-8 bg-transparent mt-2"></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="label-md text-on-surface-variant font-bold tracking-widest text-[10px] opacity-20">VOID</span>
+<div class="w-px h-8 bg-transparent mt-2"></div>
+</div>
+</div>
+</main>
+<!-- Background Ambience (No Line Rule applied: tonal shifts for depth) -->
+<div class="fixed inset-0 bg-gradient-to-tr from-surface-container-lowest via-transparent to-surface-container-low/20 pointer-events-none -z-10"></div>
+<!-- Optional Detail for Technical Feel -->
+<div class="fixed top-6 left-6 flex flex-col space-y-1 opacity-20">
+<div class="w-12 h-[1px] bg-primary"></div>
+<div class="w-6 h-[1px] bg-primary"></div>
+</div>
+<div class="fixed bottom-6 right-6 text-right opacity-20">
+<p class="text-[8px] text-primary font-mono uppercase tracking-tighter">Lat: 34.0522° N</p>
+<p class="text-[8px] text-primary font-mono uppercase tracking-tighter">Lon: 118.2437° W</p>
+</div>
+</body></html>
