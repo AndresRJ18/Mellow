@@ -53,20 +53,26 @@ Rules you must follow exactly:
     GOOD: artist:"Billie Eilish", genre:indie-pop year:2018-2023, genre:alt-pop female vocals, genre:dream-pop electro
 17. Explicit artist mentions DOMINATE the query list: if the user names a specific artist ANYWHERE
     in their input (emotional_text or music_taste_text), generate MULTIPLE queries targeting that artist
-    to maximize song variety from them. Use 2-3 queries for the same artist covering different eras or albums:
-    - Query 1: artist:"X" (all catalog)
-    - Query 2: artist:"X" year:2015-2019 (earlier era)
-    - Query 3: artist:"X" year:2020-2025 (recent era)
-    Combined weight of artist queries must be ≥ 0.65. Fill the remaining 1-2 slots with related genre queries.
+    to maximize song variety from them. Combined weight of artist queries must be ≥ 0.65.
+    Fill the remaining 1-2 slots with related genre queries.
     NEVER generate generic trap/beat/instrumental queries when a real artist is named.
+
+    Era splitting rule — ONLY split into era queries if the artist has SIGNIFICANT STYLISTIC CHANGES
+    across their career (e.g. Taylor Swift: country era vs pop era vs indie era; Raphael: 60s ballads vs
+    2000s reinvention; Radiohead: guitar rock vs electronic). For artists with a consistent or evolving-but-coherent
+    sound, use a single full-catalog query instead.
+    NEVER invent year ranges for artists with less than 4 years of active career — use only their full catalog.
+    Examples of artists that DO benefit from era splits: Taylor Swift, Raphael, David Bowie, Madonna, Kanye West.
+    Examples that do NOT: NewJeans, Peso Pluma, Olivia Rodrigo, Bad Bunny (consistent urbano sound).
+
     Example: user says "quiero escuchar a Bad Bunny" →
       CORRECT: [
-        {"query": "artist:\"Bad Bunny\"", "weight": 0.35},
-        {"query": "artist:\"Bad Bunny\" year:2020-2023", "weight": 0.30},
-        {"query": "genre:reggaeton year:2020-2025", "weight": 0.20},
-        {"query": "genre:latin trap urbano", "weight": 0.15}
+        {"query": "Bad Bunny", "weight": 0.45},
+        {"query": "Bad Bunny reggaeton urbano", "weight": 0.25},
+        {"query": "reggaeton urbano latino 2020 2024", "weight": 0.20},
+        {"query": "latin trap urbano", "weight": 0.10}
       ]
-      WRONG:   [{"query": "genre:trap", "weight": 0.4}, {"query": "latin hip hop", "weight": 0.6}]
+      WRONG: [{"query": "genre:trap", "weight": 0.4}, {"query": "latin hip hop", "weight": 0.6}]
     Apply the same artist-depth logic in lift_searches when the user named an artist: include 1-2 artist queries
     in lift_searches too, combined weight ≥ 0.4, so the lift section also surfaces more songs from that artist.
 18. When music_taste_text contains multiple genres (e.g. "pop, cumbia peruana"), EVERY genre mentioned
@@ -80,20 +86,22 @@ Rules you must follow exactly:
     BAD: genre:cumbia market:PE  (returns "100 Women Songs Vol. 2" compilations)
     GOOD: artist:"Agua Marina"  OR  artist:"Grupo 5"
     Use these known artists per genre (non-exhaustive — use your own knowledge too):
-    Cumbia peruana:     Agua Marina, Grupo 5, Armonía 10, Corazón Serrano, La Única Tropical, Los Shapis, Kaliente
+    Cumbia peruana:     Agua Marina, Grupo 5, Armonía 10, Corazón Serrano, La Única Tropical, Los Shapis, Kaliente, Chechito, Sensual Karicia, Deyvis Orosco
     Cumbia colombiana:  Carlos Vives, Totó la Momposina, Los Corraleros de Majagual, Andrés Landero
+    Pop latino:         Shakira, Ricky Martin, Luis Fonsi, Thalía, Paulina Rubio, Reik, CNCO, Karol G, Rosalía, Camilo, Sebastian Yatra, Manuel Turizo, Enrique Iglesias, Alejandro Sanz, Julieta Venegas.
     Vallenato:          Carlos Vives, Silvestre Dangond, Jorge Celedón, Carlos Vives, Fonseca
+    pop/rock latino:     Soda Stereo, Maná, Café Tacvba, Juanes, Zoé, Enanitos Verdes, La Ley, Fito Páez, Andrés Calamaro, Babasónicos, Los Prisioneros, Los Bunkers, Aterciopelados
+    pop global:          Taylor Swift, Ariana Grande, Ed Sheeran, Billie Eilish, Dua Lipa, Bruno Mars, Adele, The Weeknd, Harry Styles, Olivia Rodrigo
     Corridos/tumbados: Peso Pluma, Natanael Cano, Eslabón Armado, Junior H, Gabito Ballesteros
     Banda sinaloense:   Banda MS, El Recodo, La Arrolladora Banda El Limón, Banda El Recodo
-    Norteño/grupero:    Los Tigres del Norte, Los Tucanes de Tijuana, Intocable, Bronco
-    Reggaeton:          Bad Bunny, J Balvin, Daddy Yankee, Ozuna, Anuel AA, Karol G, Rauw Alejandro
+    Reggaeton:          Bad Bunny, J Balvin, Daddy Yankee, Ozuna, Anuel AA, Karol G, Rauw Alejandro, Feid, Myke Towers, Chencho Corleone, Mora, Eladio Carrión, Quevedo, Wisin & Yandel, Don Omar, Maluma, Arcángel, Jhayco.
     Dembow/urbano RD:   El Alfa, Rochy RD, Myke Towers
-    Salsa:              Marc Anthony, Gilberto Santa Rosa, Willie Colón, Rubén Blades, Víctor Manuelle
+    Salsa:              Marc Anthony, Gilberto Santa Rosa, Willie Colón, Rubén Blades, Víctor Manuelle, Héctor Lavoe, El Gran Combo de Puerto Rico, Jerry Rivera, Daniela Darcourt, Oscar D'León, Grupo Niche.
     Bachata:            Romeo Santos, Prince Royce, Juan Luis Guerra, Aventura
     Merengue:           Juan Luis Guerra, Wilfrido Vargas, Los Hermanos Rosario
     Kpop:               BTS, BLACKPINK, aespa, NewJeans, TWICE, Stray Kids, IVE, Le Sserafim, Enhypen, EXO, Red Velvet, Mamamoo, (G)I-DLE
     Jpop/Jrock:         Yoasobi, Ado, Official Hige Dandism, King Gnu, One Ok Rock, Kenshi Yonezu
-    Anime OST:          Hiroyuki Sawano, Yuki Hayashi, Kohta Yamamoto, Kevin Penkin
+    Anime OST:          Hiroyuki Sawano, Yuki Hayashi, Kohta Yamamoto, Kevin Penkin, Joe Hisaishi, Shiro Sagisu, Yoko Kanno.
     City pop:           Tatsuro Yamashita, Mariya Takeuchi, Anri, Omega Tribe
     Afrobeats:          Burna Boy, Wizkid, Davido, Asake, Rema, Tems, Ayra Starr
     Afropop/highlife:   Fela Kuti, King Sunny Ade, Asa
@@ -107,8 +115,8 @@ Rules you must follow exactly:
     Bossa nova:         João Gilberto, Stan Getz, Astrud Gilberto, Tom Jobim
     Flamenco:           Paco de Lucía, Camarón de la Isla, Rosalía, Diego El Cigala
     Fado:               Amália Rodrigues, Mariza, Ana Moura, Dulce Pontes
-    Música criolla (Peru): Chabuca Granda, Arturo "Zambo" Cavero, Eva Ayllón
-    Huayno/música andina: Los Kjarkas, Alborada, Flor Pucarina
+    Música criolla (Peru): Chabuca Granda, Arturo "Zambo" Cavero, Eva Ayllón, Lucha Reyes, Oscar Avilés, Lucila Campos.
+    Huayno/música andina: Los Kjarkas, Alborada, Flor Pucarina, Picaflor de los Andes, William Luna, Max Castro, Dina Páucar, Sonia Morales, Yarita Lizeth.
     Bolero:             Luis Miguel, Armando Manzanero, Trio Los Panchos, Chavela Vargas
     Ranchera/mariachi:  Vicente Fernández, José Alfredo Jiménez, Lila Downs, Pedro Infante
     Trova cubana:       Silvio Rodríguez, Pablo Milanés, Carlos Varela
@@ -121,22 +129,23 @@ Rules you must follow exactly:
     Shoegaze:           My Bloody Valentine, Slowdive, Ride, Lush, Beach House
     Dream pop:          Beach House, Mazzy Star, Cocteau Twins, Grouper
     Lo-fi hip-hop:      Nujabes, J Dilla, Shing02, Idealism, Philanthrope
-    Phonk:              GHOSTEMANE, Soudiere, kordhell, Ghostface Playa
+    Phonk:              GHOSTEMANE, Soudiere, kordhell, Ghostface Playa, DVRST, Hensonn, MoonDeity.
     Drill:              Pop Smoke, Central Cee, Dave, Fivio Foreign, Kay Flock
-    Trap:               Travis Scott, Future, Young Thug, Gunna, 21 Savage
+    Trap (US):          Travis Scott, Future, Young Thug, Gunna, 21 Savage, Lil Baby, Lil Uzi Vert, Playboi Carti, Roddy Ricch, Meek Mill, A Boogie wit da Hoodie, Polo G
+    Trap latino:        Duki, Cazzu, YSY A, Pablo Chill-E, Eladio Carrión, Bryant Myers, Luar La L., Bad Bunny, Anuel AA, Jhayco, Blessd, Ñengo Flow, Noriel, Arcángel, De La Ghetto
     R&B neo soul:       Frank Ocean, SZA, H.E.R., Daniel Caesar, Jhené Aiko
     Funk carioca:       Anitta, MC Kevinho, Ludmilla, MC Cabelinho
     Electronic/techno:  Daft Punk, Aphex Twin, Four Tet, Bicep, Amelie Lens
     House:              Disclosure, Duke Dumont, Fisher, Chris Lake
     Trance:             Armin van Buuren, Tiësto, Above & Beyond, Ferry Corsten
-    Metal:              Metallica, Iron Maiden, Slayer, Megadeth, Pantera
+    Metal:              Metallica, Iron Maiden, Slayer, Megadeth, Pantera, Black Sabbath, Judas Priest, Avenged Sevenfold.
     Progressive metal:  Tool, Dream Theater, Opeth, Porcupine Tree, Mastodon
     Math rock:          Toe, Yvette Young, Covet, Delta Sleep
     Post-rock:          Explosions in the Sky, Mogwai, Godspeed You! Black Emperor
-    Jazz:               Miles Davis, John Coltrane, Herbie Hancock, Bill Evans, Esperanza Spalding
+    Jazz:               Miles Davis, John Coltrane, Herbie Hancock, Bill Evans, Esperanza Spalding, Louis Armstrong, Duke Ellington, Ella Fitzgerald, Frank Sinatra, Nat King Cole, Chet Baker.
     Soul/funk:          James Brown, Aretha Franklin, Stevie Wonder, Al Green
-    Blues:              B.B. King, Muddy Waters, Robert Johnson, Gary Clark Jr.
-    Classical:          Beethoven, Bach, Chopin, Debussy, Satie
+    Blues:              B.B. King, Muddy Waters, Robert Johnson, Gary Clark Jr., Stevie Ray Vaughan, Howlin' Wolf, Buddy Guy.
+    Classical:          Beethoven, Bach, Chopin, Debussy, Satie, Mozart, Vivaldi, Tchaikovsky.
     Neo-classical:      Ólafur Arnalds, Nils Frahm, Max Richter, Ludovico Einaudi
     For any genre not listed — use your knowledge to find 1-2 real named artists as query anchors.
 

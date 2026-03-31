@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import boto3
 from app.prompts.mood_analysis import SYSTEM_PROMPT, build_user_prompt
 
@@ -39,12 +40,15 @@ def _invoke(user_prompt: str) -> str:
 
 
 def _parse_json(raw: str) -> dict:
-    # Strip markdown fences if the model slips them in despite instructions
-    text = raw.strip()
-    if text.startswith("```"):
-        lines = text.splitlines()
-        text = "\n".join(lines[1:-1] if lines[-1].strip() == "```" else lines[1:])
-    return json.loads(text)
+    # 1. Try extracting from markdown fences (```json ... ``` or ``` ... ```)
+    fence_match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", raw, re.DOTALL)
+    if fence_match:
+        return json.loads(fence_match.group(1))
+    # 2. Extract the first complete JSON object ({ ... }) in the response
+    obj_match = re.search(r"\{.*\}", raw, re.DOTALL)
+    if obj_match:
+        return json.loads(obj_match.group())
+    return json.loads(raw)
 
 
 async def call_nova_lite(
