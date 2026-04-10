@@ -1,19 +1,20 @@
 const BASE = import.meta.env.VITE_API_URL || ''
 
-async function request(path, options = {}) {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  })
+async function request(path, options = {}, token = null) {
+  const headers = { 'Content-Type': 'application/json', ...options.headers }
+  if (token) headers['Authorization'] = `Bearer ${token}`
+
+  const res = await fetch(`${BASE}${path}`, { ...options, headers })
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }))
-    throw new Error(err.detail || `HTTP ${res.status}`)
+    // Throw the raw detail object so callers can inspect error codes
+    throw err.detail || `HTTP ${res.status}`
   }
   return res.json()
 }
 
-export function analyze(body) {
-  return request('/analyze', { method: 'POST', body: JSON.stringify(body) })
+export function analyze(body, token) {
+  return request('/analyze', { method: 'POST', body: JSON.stringify(body) }, token)
 }
 
 export function refine(body) {

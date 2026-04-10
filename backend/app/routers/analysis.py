@@ -1,5 +1,7 @@
 import asyncio
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from app.auth import get_user_id
+from app.usage import check_and_record_search
 from app.models.schemas import (
     AnalyzeRequest,
     AnalyzeResponse,
@@ -58,7 +60,8 @@ async def _search_candidates(searches: list[SpotifySearch], total_slots: int) ->
 
 
 @router.post("/analyze", response_model=AnalyzeResponse)
-async def analyze(req: AnalyzeRequest) -> AnalyzeResponse:
+async def analyze(req: AnalyzeRequest, user_id: str = Depends(get_user_id)) -> AnalyzeResponse:
+    await check_and_record_search(user_id)
     if len(req.emotional_text.split()) < 5:
         raise HTTPException(status_code=422, detail="emotional_text must be at least 5 words")
 

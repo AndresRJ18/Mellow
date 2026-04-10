@@ -50,31 +50,37 @@ export default function Loading() {
         setVisibleMessages((p) => [...p, i])
       }
       try {
+        const { data: { session } } = await supabase.auth.getSession()
+        const token = session?.access_token
+
         const result = await analyze({
           emotional_text: emotionalText,
           music_taste_text: musicTasteText || null,
           slider_tempo: sliderTempo,
           slider_lyrics: sliderLyrics,
           slider_familiarity: sliderFamiliarity,
-        })
+        }, token)
         await delay(400)
         setVisibleMessages((p) => [...p, MESSAGES.length - 1])
         await delay(1000)
         initFromAnalyze(result)
-        supabase.auth.getUser().then(({ data: { user } }) => {
-          if (user) {
-            supabase.from('mood_sessions').insert({
-              user_id: user.id,
-              mood_label: result.mood_label,
-              lectura: result.lectura,
-              paleta: result.paleta || [],
-              emotional_text: emotionalText,
-            })
-          }
-        })
+        if (session?.user) {
+          supabase.from('mood_sessions').insert({
+            user_id: session.user.id,
+            mood_label: result.mood_label,
+            lectura: result.lectura,
+            paleta: result.paleta || [],
+            emotional_text: emotionalText,
+          })
+        }
         navigate('/results')
       } catch (err) {
-        setError(err.message || 'Something went wrong. Please try again.')
+        if (err?.code === 'daily_limit_exceeded') {
+          navigate('/limit-reached')
+          return
+        }
+        const msg = typeof err === 'string' ? err : (err?.message || 'Something went wrong. Please try again.')
+        setError(msg)
       }
     }
     showMessages()

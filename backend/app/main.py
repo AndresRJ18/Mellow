@@ -9,14 +9,12 @@ from app.routers import analysis, spotify, refinement, playlist
 
 app = FastAPI(title="Mellow API", version="1.0.0")
 
-_frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[_frontend_url, "http://localhost:3000", "http://localhost:80"],
+    allow_origins=["https://mellow.lat", "https://www.mellow.lat"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 app.include_router(analysis.router)
