@@ -7,26 +7,16 @@ services:
     restart: unless-stopped
     networks:
       - internal
-
-  caddy:
-    image: caddy:2-alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - backend
-    restart: unless-stopped
-    networks:
-      - internal
-
-volumes:
-  caddy_data:
-  caddy_config:
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mellow-backend.rule=Host(`api.mellow.lat`)"
+      - "traefik.http.routers.mellow-backend.entrypoints=websecure"
+      - "traefik.http.routers.mellow-backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mellow-backend.loadbalancer.server.port=8000"
 
 networks:
   internal:
     driver: bridge
+  dokploy-network:
+    external: true
