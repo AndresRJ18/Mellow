@@ -8,12 +8,6 @@ services:
     networks:
       - internal
       - dokploy-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mellow-backend.rule=Host(`api.mellow.lat`)"
-      - "traefik.http.routers.mellow-backend.entrypoints=websecure"
-      - "traefik.http.routers.mellow-backend.tls.certresolver=letsencrypt"
-      - "traefik.http.services.mellow-backend.loadbalancer.server.port=8000"
 
 networks:
   internal:
